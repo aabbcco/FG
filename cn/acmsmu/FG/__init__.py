@@ -4,9 +4,11 @@
 @time: created on 2020/4/4 15:04
 @修改记录:
 '''
+from enum import Flag
 import nonebot
 import time
 import os
+from nonebot.adapters.cqhttp.event import GroupMessageEvent
 
 from nonebot.plugin import on_message
 from cn.acmsmu.FG import Timer
@@ -30,12 +32,32 @@ for each in groupInfo:
     except FileExistsError:
         continue
 
-wordcloud = on_message(block=False)
+
+def CheckGroup(bot: Bot, event: Event, state: T_State) -> bool:
+    return isinstance(event, GroupMessageEvent) and event.group_id in groupInfo.keys()
 
 
+wordcloud = on_message(block=False, rule=CheckGroup)
+
+
+# change the group session to nb2 event
+# can even abandon the bot,if possible
 @wordcloud.handle()
-async def HandleGroupMsg(bot: Bot, event: Event):
-    groupInfo = configuration['groupInfo']
+async def HandleGroupMsg(bot: Bot, event: GroupMessageEvent):
+    # read each pkl
+    # why dont we,i mean create an sql or something?
+    dataDict = IOUtils.deserializeObjFromPkl(
+        os.getcwd(), 'cn', 'acmsmu', 'FG', 'data', str(event.group_id), 'var.pkl')
+    flag = dataDict['flag']
+    msg = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + ' ' + \
+        str(event.user_id) + '\n' + event.raw_message + '\n'
+    # determine what file we would write
+    if flag:
+        with open(os.path.join(os.getcwd(), 'cn', 'acmsmu', 'FG', 'data', str(event.group_id), 'chatA.txt'), 'a', encoding='utf-8') as fileA:
+            fileA.write(msg)
+    else:
+        with open(os.path.join(os.getcwd(), 'cn', 'acmsmu', 'FG', 'data', str(event.group_id), 'chatB.txt'), 'a', encoding='utf-8') as fileB:
+            fileB.write(msg)
 
 
 # @bot.on_message('group')

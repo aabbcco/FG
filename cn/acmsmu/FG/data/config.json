@@ -7,14 +7,13 @@
     "nonebotPort":8080,
     "cqhttpHost":"127.0.0.1",
     "cqhttpPort":5700,
-    "groupInfo":[
-        {
+    "groupInfo":{
+        "GroupId":{
             "timer":"timer1",
             "beginHour":23,
-            "beginMinutes":0,
-            "groupId":""
+            "beginMinutes":0
         }
-    ],
+    },
     "wcImg":[
         {
             "desc":"刘慈欣",
