@@ -4,25 +4,24 @@
 @time: created on 2020/4/4 15:04
 @修改记录:
 '''
-from enum import Flag
 import nonebot
 import time
 import os
 from nonebot.adapters.cqhttp.event import GroupMessageEvent
 
 from nonebot.plugin import on_message
-from cn.acmsmu.FG import Timer
-from Utils.JsonUtils import JsonUtils
-from Utils.IOUtils import IOUtils
+from . import Timer
+from .Utils.JsonUtils import JsonUtils
+from .Utils.IOUtils import IOUtils
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event
 
 configuration = JsonUtils.json2Dict(os.path.join(
     os.getcwd(), 'cn', 'acmsmu', 'FG', 'data', 'config.json'))
 groupInfo = configuration['groupInfo']
-for each in groupInfo:
+for group_id in groupInfo.keys():
     fpath = os.path.join(os.getcwd(), 'cn', 'acmsmu',
-                         'FG', 'data', each['groupId'])
+                         'FG', 'data', groupInfo[group_id])
     try:
         dataDict = dict()
         dataDict['flag'] = True
@@ -34,7 +33,7 @@ for each in groupInfo:
 
 
 def CheckGroup(bot: Bot, event: Event, state: T_State) -> bool:
-    return isinstance(event, GroupMessageEvent) and event.group_id in groupInfo.keys()
+    return isinstance(event, GroupMessageEvent) and str(event.group_id) in groupInfo.keys()
 
 
 wordcloud = on_message(block=False, rule=CheckGroup)
