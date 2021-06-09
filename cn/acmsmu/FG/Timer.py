@@ -9,8 +9,8 @@ import nonebot
 from nonebot import require
 import os
 from cn.acmsmu.FG import DailyConclusion
-from Utils.JsonUtils import JsonUtils
-from Utils.IOUtils import IOUtils
+from .Utils.JsonUtils import JsonUtils
+from .Utils.IOUtils import IOUtils
 
 scheduler = require('nonebot_plugin_apscheduler').scheduler
 
